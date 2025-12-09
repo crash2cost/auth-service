@@ -30,6 +30,12 @@ public class AuthServiceConstants {
         public static final String AUTH_HEADER = "Authorization";
         public static final String BEARER_PREFIX = "Bearer ";
         public static final String LOGGER_ERROR = "Cannot set user authentication: {}";
-
+    }
+    public static class Service{
+        public static final String USERNAME_EXISTS = "Username already exists";
+        public static final String EMAIL_EXISTS = "Email already exists";
+        public static final String USERNAME_NOT_FOUND = "Username not found";
+        public static final String MESSAGE = "message";
+        
     }
 }

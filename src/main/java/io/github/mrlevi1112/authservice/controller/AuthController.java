@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
 
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class AuthController {
             TokenDTO response = authService.signup(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(AuthServiceConstants.Service.MESSAGE, e.getMessage()));
         }
     }
 
@@ -37,7 +38,7 @@ public class AuthController {
             TokenDTO response = authService.login(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
+            return ResponseEntity.status(401).body(Map.of(AuthServiceConstants.Service.MESSAGE, e.getMessage()));
         }
     }
 }
