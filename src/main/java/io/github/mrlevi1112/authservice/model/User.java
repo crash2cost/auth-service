@@ -12,7 +12,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 import static io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants.Validation.MAX_PASSWORD_LENGTH;

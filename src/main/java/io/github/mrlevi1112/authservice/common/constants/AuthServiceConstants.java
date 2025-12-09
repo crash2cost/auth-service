@@ -20,9 +20,16 @@ public class AuthServiceConstants {
         public static final int MAX_USERNAME_LENGTH = 32;
     }
     public static class Database{
-       public static final String USERS_COLLECTION = "users";
+        public static final String USERS_COLLECTION = "users";
     }
     public static class Security{
         public static final String INVALID_CREDENTIALS = "Invalid username or password";
+        public static final String USERNAME_NOT_FOUND = "User not found with username: ";
+        public static final String USER_ROLE = "ROLE_";
+        public static final int AUTH_HEADER_PREFIX_LENGTH = 7;
+        public static final String AUTH_HEADER = "Authorization";
+        public static final String BEARER_PREFIX = "Bearer ";
+        public static final String LOGGER_ERROR = "Cannot set user authentication: {}";
+
     }
 }
