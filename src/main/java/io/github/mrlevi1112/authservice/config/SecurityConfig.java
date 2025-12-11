@@ -1,5 +1,6 @@
 package io.github.mrlevi1112.authservice.config;
 
+import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
 import io.github.mrlevi1112.authservice.security.CustomUserDetailsService;
 import io.github.mrlevi1112.authservice.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers(AuthServiceConstants.Security.AUTH_ENDPOINT_PATTERN).permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

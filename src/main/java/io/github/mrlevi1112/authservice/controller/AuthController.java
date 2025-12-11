@@ -16,13 +16,13 @@ import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(AuthServiceConstants.Security.AUTH_API_BASE)
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/signup")
+    @PostMapping(AuthServiceConstants.Security.SIGNUP_ENDPOINT)
     public ResponseEntity<?> signup(@Valid @RequestBody SignUpDTO request) {
         try {
             TokenDTO response = authService.signup(request);
@@ -32,13 +32,13 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping(AuthServiceConstants.Security.LOGIN_ENDPOINT)
     public ResponseEntity<?> login(@Valid @RequestBody LogInDTO request) {
         try {
             TokenDTO response = authService.login(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(401).body(Map.of(AuthServiceConstants.Service.MESSAGE, e.getMessage()));
+            return ResponseEntity.status(AuthServiceConstants.Security.HTTP_UNAUTHORIZED).body(Map.of(AuthServiceConstants.Service.MESSAGE, e.getMessage()));
         }
     }
 }

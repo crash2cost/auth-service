@@ -10,32 +10,21 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-# JWT Configuration
 jwt:
-  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-  expiration: 3600000 # 1 hour
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:3600000} 
 
-# Upload Configuration
 upload:
   directory: uploads
 
-# CORS Configuration
 cors:
   allowed-origins: http://localhost:5173
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS
   allowed-headers: "*"
   allow-credentials: true
 
-# Logging
 logging:
   level:
     io.github.mrlevi1112: DEBUG
     org.springframework.security: DEBUG
     org.springframework.web: INFO
-
-
-# Upload Configuration
-
-# CORS Configuration
-
-# Logging
