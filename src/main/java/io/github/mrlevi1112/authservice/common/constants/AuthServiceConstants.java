@@ -40,7 +40,7 @@ public class AuthServiceConstants {
         public static final int HTTP_UNAUTHORIZED = 401;
         public static final String ROLE_KEY = "role";
     }
-    public static class Service{
+    public static class AuthMessages{
         public static final String USERNAME_EXISTS = "Username already exists";
         public static final String EMAIL_EXISTS = "Email already exists";
         public static final String USERNAME_NOT_FOUND = "Username not found";
