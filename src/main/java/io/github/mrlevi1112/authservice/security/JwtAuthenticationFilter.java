@@ -38,12 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String jwt = extractJwtFromHeader(authHeader);
-        
-        try {
-            authenticateUser(jwt, request);
-        } catch (Exception e) {
-            logger.error(AuthServiceConstants.Security.LOGGER_ERROR, e);
-        }
+        authenticateUser(jwt, request);
 
         filterChain.doFilter(request, response);
     }

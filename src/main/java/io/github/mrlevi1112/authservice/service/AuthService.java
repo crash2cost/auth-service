@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AuthService {
 
-    public static final String Jwt = null;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -34,21 +33,11 @@ public class AuthService {
             throw new RuntimeException(AuthServiceConstants.AuthMessages.EMAIL_EXISTS);
         }
 
-        User user = User.builder()
-                .username(signUpDTO.getUsername())
-                .email(signUpDTO.getEmail())
-                .password(passwordEncoder.encode(signUpDTO.getPassword()))
-                .role(UserRole.USER)
-                .createdAt(LocalDateTime.now())
-                .build();
+        User user = createUser(signUpDTO);
         userRepository.save(user);
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
-        return TokenDTO.builder()
-                .tokenAccess(token)
-                .tokenType(AuthServiceConstants.Security.BEARER_PREFIX.trim())
-                .role(user.getRole().name())
-                .build();
+        return createTokenResponse(token, user.getRole().name());
     }
 
     public TokenDTO login(LogInDTO logInDTO) {
@@ -63,10 +52,24 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException(AuthServiceConstants.AuthMessages.USERNAME_NOT_FOUND));
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+        return createTokenResponse(token, user.getRole().name());
+    }
+
+    private User createUser(SignUpDTO signUpDTO) {
+        return User.builder()
+                .username(signUpDTO.getUsername())
+                .email(signUpDTO.getEmail())
+                .password(passwordEncoder.encode(signUpDTO.getPassword()))
+                .role(UserRole.USER)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private TokenDTO createTokenResponse(String token, String role) {
         return TokenDTO.builder()
                 .tokenAccess(token)
                 .tokenType(AuthServiceConstants.Security.BEARER_PREFIX.trim())
-                .role(user.getRole().name())
+                .role(role)
                 .build();
     }
 }
