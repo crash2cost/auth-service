@@ -10,18 +10,20 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
+
 @Configuration
-@EnableMongoRepositories(basePackages = "io.github.mrlevi1112.authservice.repository")
+@EnableMongoRepositories(basePackages = AuthServiceConstants.Database.MONGO_REPOSITORY_PACKAGE)
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     protected String getDatabaseName() {
-        return "crash2cost";
+        return AuthServiceConstants.Database.DATABSE_NAME;
     }
 
     @Override
     public MongoClient mongoClient() {
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017/crash2cost");
+        ConnectionString connectionString = new ConnectionString(AuthServiceConstants.Database.MONGO_CLIENT_CONNECTION);
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();

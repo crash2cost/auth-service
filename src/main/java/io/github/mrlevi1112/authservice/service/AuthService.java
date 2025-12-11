@@ -1,5 +1,7 @@
 package io.github.mrlevi1112.authservice.service;
 
+import io.github.mrlevi1112.authservice.builder.TokenDTOBuilder;
+import io.github.mrlevi1112.authservice.builder.UserBuilder;
 import io.github.mrlevi1112.authservice.common.enums.UserRole;
 import io.github.mrlevi1112.authservice.dto.LogInDTO;
 import io.github.mrlevi1112.authservice.dto.SignUpDTO;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AuthService {
 
+    public static final String Jwt = null;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -33,23 +36,11 @@ public class AuthService {
             throw new RuntimeException(AuthServiceConstants.Service.EMAIL_EXISTS);
         }
 
-        User user = User.builder()
-                .username(signUpDTO.getUsername())
-                .email(signUpDTO.getEmail())
-                .password(passwordEncoder.encode(signUpDTO.getPassword())) 
-                .role(UserRole.USER) 
-                .createdAt(LocalDateTime.now())
-                .build();
-
+        User user = UserBuilder.buildNewUser(signUpDTO, passwordEncoder);
         userRepository.save(user);
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
-        
-        return TokenDTO.builder()
-                .tokenAccess(token)
-                .tokenType(AuthServiceConstants.Security.BEARER_PREFIX.trim())
-                .role(user.getRole().name())
-                .build();
+        return TokenDTOBuilder.buildTokenResponse(token, user);
     }
 
     public TokenDTO login(LogInDTO logInDTO) {
@@ -64,11 +55,6 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException(AuthServiceConstants.Service.USERNAME_NOT_FOUND));
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
-
-        return TokenDTO.builder()
-                .tokenAccess(token)
-                .tokenType(AuthServiceConstants.Security.BEARER_PREFIX.trim())
-                .role(user.getRole().name())
-                .build();
+        return TokenDTOBuilder.buildTokenResponse(token, user);
     }
 }

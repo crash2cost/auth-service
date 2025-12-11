@@ -21,6 +21,9 @@ public class AuthServiceConstants {
     }
     public static class Database{
         public static final String USERS_COLLECTION = "users";
+        public static final String DATABSE_NAME = "crash2cost";
+        public static final String MONGO_REPOSITORY_PACKAGE = "io.github.mrlevi1112.authservice.repository";
+        public static final String MONGO_CLIENT_CONNECTION = "mongodb://localhost:27017/crash2cost";
     }
     public static class Security{
         public static final String INVALID_CREDENTIALS = "Invalid username or password";
@@ -30,12 +33,23 @@ public class AuthServiceConstants {
         public static final String AUTH_HEADER = "Authorization";
         public static final String BEARER_PREFIX = "Bearer ";
         public static final String LOGGER_ERROR = "Cannot set user authentication: {}";
+        public static final String AUTH_ENDPOINT_PATTERN = "/api/auth/**";
+        public static final String AUTH_API_BASE = "/api/auth/";
+        public static final String SIGNUP_ENDPOINT = "/signup";
+        public static final String LOGIN_ENDPOINT = "/login";
+        public static final int HTTP_UNAUTHORIZED = 401;
+        public static final String ROLE_KEY = "role";
     }
     public static class Service{
         public static final String USERNAME_EXISTS = "Username already exists";
         public static final String EMAIL_EXISTS = "Email already exists";
         public static final String USERNAME_NOT_FOUND = "Username not found";
         public static final String MESSAGE = "message";
-        
     }
+
+    public static class Jwt{
+        public static final String JWT_KEY = "${jwt.secret}";
+        public static final String JWT_EXPIRATION = "${jwt.expiration}";
+    }
+
 }

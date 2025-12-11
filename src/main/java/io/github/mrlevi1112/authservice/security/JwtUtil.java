@@ -1,5 +1,6 @@
 package io.github.mrlevi1112.authservice.security;
 
+import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -17,10 +18,10 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
+    @Value(AuthServiceConstants.Jwt.JWT_KEY)
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value(AuthServiceConstants.Jwt.JWT_EXPIRATION)
     private long jwtExpiration;
 
     private SecretKey getSignInKey() {
@@ -47,7 +48,7 @@ public class JwtUtil {
 
     public String generateToken(String username, String role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role);
+        claims.put(AuthServiceConstants.Security.ROLE_KEY, role);
         return buildToken(claims, username, jwtExpiration);
     }
 
@@ -74,3 +75,4 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 }
+
