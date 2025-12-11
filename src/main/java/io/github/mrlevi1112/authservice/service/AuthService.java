@@ -1,7 +1,6 @@
 package io.github.mrlevi1112.authservice.service;
 
-import io.github.mrlevi1112.authservice.builder.TokenDTOBuilder;
-import io.github.mrlevi1112.authservice.builder.UserBuilder;
+import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
 import io.github.mrlevi1112.authservice.common.enums.UserRole;
 import io.github.mrlevi1112.authservice.dto.LogInDTO;
 import io.github.mrlevi1112.authservice.dto.SignUpDTO;
@@ -14,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
 
 import java.time.LocalDateTime;
 
@@ -30,17 +28,27 @@ public class AuthService {
 
     public TokenDTO signup(SignUpDTO signUpDTO) {
         if (userRepository.existsByUsername(signUpDTO.getUsername())) {
-            throw new RuntimeException(AuthServiceConstants.Service.USERNAME_EXISTS);
+            throw new RuntimeException(AuthServiceConstants.AuthMessages.USERNAME_EXISTS);
         }
         if (userRepository.existsByEmail(signUpDTO.getEmail())) {
-            throw new RuntimeException(AuthServiceConstants.Service.EMAIL_EXISTS);
+            throw new RuntimeException(AuthServiceConstants.AuthMessages.EMAIL_EXISTS);
         }
 
-        User user = UserBuilder.buildNewUser(signUpDTO, passwordEncoder);
+        User user = User.builder()
+                .username(signUpDTO.getUsername())
+                .email(signUpDTO.getEmail())
+                .password(passwordEncoder.encode(signUpDTO.getPassword()))
+                .role(UserRole.USER)
+                .createdAt(LocalDateTime.now())
+                .build();
         userRepository.save(user);
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
-        return TokenDTOBuilder.buildTokenResponse(token, user);
+        return TokenDTO.builder()
+                .tokenAccess(token)
+                .tokenType(AuthServiceConstants.Security.BEARER_PREFIX.trim())
+                .role(user.getRole().name())
+                .build();
     }
 
     public TokenDTO login(LogInDTO logInDTO) {
@@ -52,9 +60,13 @@ public class AuthService {
         );
 
         User user = userRepository.findByUsername(logInDTO.getUsername())
-                .orElseThrow(() -> new RuntimeException(AuthServiceConstants.Service.USERNAME_NOT_FOUND));
+                .orElseThrow(() -> new RuntimeException(AuthServiceConstants.AuthMessages.USERNAME_NOT_FOUND));
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
-        return TokenDTOBuilder.buildTokenResponse(token, user);
+        return TokenDTO.builder()
+                .tokenAccess(token)
+                .tokenType(AuthServiceConstants.Security.BEARER_PREFIX.trim())
+                .role(user.getRole().name())
+                .build();
     }
 }

@@ -39,11 +39,14 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
+        return parseToken(token).getPayload();
+    }
+
+    private io.jsonwebtoken.Jws<Claims> parseToken(String token) {
         return Jwts.parser()
                 .verifyWith(getSignInKey())
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseSignedClaims(token);
     }
 
     public String generateToken(String username, String role) {
@@ -53,13 +56,18 @@ public class JwtUtil {
     }
 
     private String buildToken(Map<String, Object> extraClaims, String subject, long expiration) {
+        long currentTime = System.currentTimeMillis();
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(subject)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .issuedAt(createDate(currentTime))
+                .expiration(createDate(currentTime + expiration))
                 .signWith(getSignInKey())
                 .compact();
+    }
+
+    private Date createDate(long timestamp) {
+        return new Date(timestamp);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
