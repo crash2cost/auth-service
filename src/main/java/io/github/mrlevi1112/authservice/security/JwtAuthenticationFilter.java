@@ -72,4 +72,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
     }
+
+    private boolean isValidAuthHeader(String authHeader) {
+        return authHeader != null && authHeader.startsWith(AuthServiceConstants.Security.BEARER_PREFIX);
+    }
+
+    private String extractJwtFromHeader(String authHeader) {
+        return authHeader.substring(AuthServiceConstants.Security.AUTH_HEADER_PREFIX_LENGTH);
+    }
+
+    private void authenticateUser(String jwt, HttpServletRequest request) {
+        final String username = jwtUtil.extractUsername(jwt);
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            if (jwtUtil.isTokenValid(jwt, userDetails)) {
+                setAuthentication(userDetails, request);
+            }
+        }
+    }
+
+    private void setAuthentication(UserDetails userDetails, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
 }
