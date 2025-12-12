@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import static io.github.mrlevi1112.authservice.common.constants.AuthServiceConst
 import static io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants.Validation.MIN_PASSWORD_LENGTH;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignUpDTO {
