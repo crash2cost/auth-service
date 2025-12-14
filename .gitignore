@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment Variables ###
+.env
+.env.local
+.env.*.local
+
+
+src/main/java/io/github/mrlevi1112/authservice/controller/DemoController.java
