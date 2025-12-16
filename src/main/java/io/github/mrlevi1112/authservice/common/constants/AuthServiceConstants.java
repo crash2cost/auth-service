@@ -58,9 +58,13 @@ public class AuthServiceConstants {
 
     public static class Jwt{
         private Jwt() {}
-        
         public static final String JWT_KEY = "${jwt.secret}";
         public static final String JWT_EXPIRATION = "${jwt.expiration}";
+    }
+    public static class Images{
+        private Images() {}
+        public static final String IMAGE_NOT_FOUND = "Image not found";
+        public static final String UNOTHORIZED_TO_DELETE_IMAGE = "Unauthorized to delete this image";
     }
 
 }
