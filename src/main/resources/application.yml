@@ -5,14 +5,17 @@ spring:
   application:
     name: crash2cost-api
 
+  mongodb:
+    uri: mongodb://localhost:27017/crash2cost
+
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
 
 jwt:
-  secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION:3600000} 
+  secret: ${env.JWT_SECRET}
+  expiration: ${env.JWT_EXPIRATION:3600000}
 
 upload:
   directory: uploads
@@ -25,6 +28,6 @@ cors:
 
 logging:
   level:
-    io.github.mrlevi1112: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.web: INFO
+    '[io.github.mrlevi1112]': DEBUG
+    '[org.springframework.security]': DEBUG
+    '[org.springframework.web]': INFO

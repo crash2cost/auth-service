@@ -1,7 +1,10 @@
 package io.github.mrlevi1112.authservice.common.constants;
 
 public class AuthServiceConstants {
+    private AuthServiceConstants() {}
+    
     public static class Validation{
+        private Validation() {}
         public static final String INVALID_EMAIL = "Email not valid";
         public static final String BLANK_EMAIL = "Email cannot be blank";
         public static final String INVALID_USERNAME = "Username not valid";
@@ -20,12 +23,16 @@ public class AuthServiceConstants {
         public static final int MAX_USERNAME_LENGTH = 32;
     }
     public static class Database{
+        private Database() {}
+        
         public static final String USERS_COLLECTION = "users";
         public static final String DATABSE_NAME = "crash2cost";
         public static final String MONGO_REPOSITORY_PACKAGE = "io.github.mrlevi1112.authservice.repository";
         public static final String MONGO_CLIENT_CONNECTION = "${MONGO_CLIENT_CONNECTION}";
     }
     public static class Security{
+        private Security() {}
+        
         public static final String INVALID_CREDENTIALS = "Invalid username or password";
         public static final String USERNAME_NOT_FOUND = "User not found with username: ";
         public static final String USER_ROLE = "ROLE_";
@@ -41,6 +48,8 @@ public class AuthServiceConstants {
         public static final String ROLE_KEY = "role";
     }
     public static class AuthMessages{
+        private AuthMessages() {}
+        
         public static final String USERNAME_EXISTS = "Username already exists";
         public static final String EMAIL_EXISTS = "Email already exists";
         public static final String USERNAME_NOT_FOUND = "Username not found";
@@ -48,6 +57,8 @@ public class AuthServiceConstants {
     }
 
     public static class Jwt{
+        private Jwt() {}
+        
         public static final String JWT_KEY = "${jwt.secret}";
         public static final String JWT_EXPIRATION = "${jwt.expiration}";
     }
