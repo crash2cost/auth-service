@@ -23,6 +23,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path != null && path.startsWith(AuthServiceConstants.Security.AUTH_API_BASE);
+    }
+
+    @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -37,7 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String jwt = extractJwtFromHeader(authHeader);
-        authenticateUser(jwt, request);
+        try {
+            authenticateUser(jwt, request);
+        } catch (io.jsonwebtoken.ExpiredJwtException ignored) {
+            // Expired tokens should not break anonymous endpoints.
+        }
 
         filterChain.doFilter(request, response);
     }
