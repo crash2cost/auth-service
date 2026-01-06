@@ -32,6 +32,7 @@ public class DamageAssessmentService {
             String url = reportServiceUrl + "/api/reports/damage-assessment";
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
+            headers.set("Authorization", authHeader);
             
             // Create report object
             ReportDTO report = new ReportDTO();
