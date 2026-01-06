@@ -22,7 +22,7 @@ public class DamageAssessmentController {
             @RequestBody DamageAssessment assessment) {
         String userId = jwtUtil.extractUsername(token.replace("Bearer ", ""));
         assessment.setUserId(userId);
-        return ResponseEntity.ok(assessmentService.saveAssessment(assessment));
+        return ResponseEntity.ok(assessmentService.saveAssessment(token, assessment));
     }
 
     @GetMapping

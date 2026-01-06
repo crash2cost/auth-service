@@ -23,7 +23,7 @@ public class DamageAssessmentService {
     @Value("${report.service.url:http://localhost:8003}")
     private String reportServiceUrl;
 
-    public DamageAssessment saveAssessment(DamageAssessment assessment) {
+    public DamageAssessment saveAssessment(String authHeader, DamageAssessment assessment) {
         assessment.setAssessmentDate(LocalDateTime.now());
         DamageAssessment saved = assessmentRepository.save(assessment);
         
