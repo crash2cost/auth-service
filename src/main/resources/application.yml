@@ -5,8 +5,9 @@ spring:
   application:
     name: crash2cost-api
 
-  mongodb:
-    uri: mongodb://localhost:27017/crash2cost
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/crash2cost
 
   servlet:
     multipart:
