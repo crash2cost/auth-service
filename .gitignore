@@ -37,3 +37,11 @@ build/
 .env.local
 .env.*.local
 .env.example
+<<<<<<< Updated upstream
+=======
+
+
+### Logs ###
+logs
+*.log
+>>>>>>> Stashed changes
