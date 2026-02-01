@@ -49,7 +49,7 @@ public class ImageService {
     public void deleteImage(String imageId, String userId) {
         UserImage image = getImage(imageId);
         if (!image.getUserId().equals(userId)) {
-            throw new RuntimeException(AuthServiceConstants.Images.UNOTHORIZED_TO_DELETE_IMAGE);
+            throw new RuntimeException(AuthServiceConstants.Images.UNAUTHORIZED_TO_DELETE_IMAGE);
         }
         userImageRepository.deleteById(imageId);
     }
