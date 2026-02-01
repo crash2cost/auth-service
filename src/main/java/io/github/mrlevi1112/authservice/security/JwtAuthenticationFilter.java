@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -45,8 +47,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt = extractJwtFromHeader(authHeader);
         try {
             authenticateUser(jwt, request);
-        } catch (io.jsonwebtoken.ExpiredJwtException ignored) {
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
             // Expired tokens should not break anonymous endpoints.
+            // Proceeding without authentication for potential public access.
+            log.debug("Expired JWT token detected: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);
