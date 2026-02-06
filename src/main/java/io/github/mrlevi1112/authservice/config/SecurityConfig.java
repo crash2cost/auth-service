@@ -32,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configure(http))
+            .cors(AbstractHttpConfigurer::disable)  // CORS is handled by API Gateway - disable here to prevent duplicate headers
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(AuthServiceConstants.Security.AUTH_ENDPOINT_PATTERN).permitAll()

@@ -28,7 +28,7 @@ public class AuthServiceConstants {
         public static final String USERS_COLLECTION = "users";
         public static final String DATABASE_NAME = "crash2cost";
         public static final String MONGO_REPOSITORY_PACKAGE = "io.github.mrlevi1112.authservice.repository";
-        public static final String MONGO_CLIENT_CONNECTION = "${MONGO_CLIENT_CONNECTION}";
+        public static final String MONGO_CLIENT_CONNECTION = "${MONGO_CLIENT_CONNECTION:mongodb://localhost:27017/crash2cost}";
     }
     public static class Security{
         private Security() {}

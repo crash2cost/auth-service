@@ -5,6 +5,8 @@ import io.github.mrlevi1112.authservice.common.enums.UserRole;
 import io.github.mrlevi1112.authservice.dto.LogInDTO;
 import io.github.mrlevi1112.authservice.dto.SignUpDTO;
 import io.github.mrlevi1112.authservice.dto.TokenDTO;
+import io.github.mrlevi1112.authservice.exception.UserAlreadyExistsException;
+import io.github.mrlevi1112.authservice.exception.UserNotFoundException;
 import io.github.mrlevi1112.authservice.model.User;
 import io.github.mrlevi1112.authservice.repository.UserRepository;
 import io.github.mrlevi1112.authservice.security.JwtUtil;
@@ -16,6 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service handling user authentication operations.
+ * Provides signup and login functionality with JWT token generation.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -25,12 +31,19 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Register a new user.
+     *
+     * @param signUpDTO User registration data
+     * @return TokenDTO containing JWT access token
+     * @throws UserAlreadyExistsException if username or email already exists
+     */
     public TokenDTO signup(SignUpDTO signUpDTO) {
         if (userRepository.existsByUsername(signUpDTO.getUsername())) {
-            throw new RuntimeException(AuthServiceConstants.AuthMessages.USERNAME_EXISTS);
+            throw new UserAlreadyExistsException(AuthServiceConstants.AuthMessages.USERNAME_EXISTS);
         }
         if (userRepository.existsByEmail(signUpDTO.getEmail())) {
-            throw new RuntimeException(AuthServiceConstants.AuthMessages.EMAIL_EXISTS);
+            throw new UserAlreadyExistsException(AuthServiceConstants.AuthMessages.EMAIL_EXISTS);
         }
 
         User user = createUser(signUpDTO);
@@ -40,6 +53,13 @@ public class AuthService {
         return createTokenResponse(token, user.getRole().name());
     }
 
+    /**
+     * Authenticate a user and generate JWT token.
+     *
+     * @param logInDTO User login credentials
+     * @return TokenDTO containing JWT access token
+     * @throws UserNotFoundException if user does not exist
+     */
     public TokenDTO login(LogInDTO logInDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -49,7 +69,7 @@ public class AuthService {
         );
 
         User user = userRepository.findByUsername(logInDTO.getUsername())
-                .orElseThrow(() -> new RuntimeException(AuthServiceConstants.AuthMessages.USERNAME_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(AuthServiceConstants.AuthMessages.USERNAME_NOT_FOUND));
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
         return createTokenResponse(token, user.getRole().name());
