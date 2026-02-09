@@ -56,6 +56,10 @@ public class DamageAssessmentService {
         return assessmentRepository.findByUserIdOrderByAssessmentDateDesc(userId);
     }
 
+    public List<DamageAssessment> getAllAssessments() {
+        return assessmentRepository.findAll();
+    }
+
     public Optional<DamageAssessment> getAssessmentByImageId(String imageId) {
         return assessmentRepository.findByImageId(imageId);
     }

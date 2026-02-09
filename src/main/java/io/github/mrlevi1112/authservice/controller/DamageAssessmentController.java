@@ -32,6 +32,16 @@ public class DamageAssessmentController {
         return ResponseEntity.ok(assessmentService.getUserAssessments(userId));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<DamageAssessment>> getAllAssessments(
+            @RequestHeader("Authorization") String token) {
+        String role = jwtUtil.extractRole(token.replace("Bearer ", ""));
+        if (role == null || !"ADMIN".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(403).build();
+        }
+        return ResponseEntity.ok(assessmentService.getAllAssessments());
+    }
+
     @GetMapping("/image/{imageId}")
     public ResponseEntity<DamageAssessment> getAssessmentByImageId(
             @PathVariable String imageId) {
