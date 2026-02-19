@@ -18,10 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-/**
- * Service handling user authentication operations.
- * Provides signup and login functionality with JWT token generation.
- */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -31,13 +27,6 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
-    /**
-     * Register a new user.
-     *
-     * @param signUpDTO User registration data
-     * @return TokenDTO containing JWT access token
-     * @throws UserAlreadyExistsException if username or email already exists
-     */
     public TokenDTO signup(SignUpDTO signUpDTO) {
         if (userRepository.existsByUsername(signUpDTO.getUsername())) {
             throw new UserAlreadyExistsException(AuthServiceConstants.AuthMessages.USERNAME_EXISTS);
@@ -53,13 +42,6 @@ public class AuthService {
         return createTokenResponse(token, user.getRole().name());
     }
 
-    /**
-     * Authenticate a user and generate JWT token.
-     *
-     * @param logInDTO User login credentials
-     * @return TokenDTO containing JWT access token
-     * @throws UserNotFoundException if user does not exist
-     */
     public TokenDTO login(LogInDTO logInDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

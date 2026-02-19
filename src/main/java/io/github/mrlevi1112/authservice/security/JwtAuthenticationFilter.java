@@ -48,8 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             authenticateUser(jwt, request);
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            // Expired tokens should not break anonymous endpoints.
-            // Proceeding without authentication for potential public access.
             log.debug("Expired JWT token detected: {}", e.getMessage());
         }
 

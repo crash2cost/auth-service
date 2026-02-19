@@ -27,14 +27,12 @@ public class DamageAssessmentService {
         assessment.setAssessmentDate(LocalDateTime.now());
         DamageAssessment saved = assessmentRepository.save(assessment);
         
-        // Also save to report-service
         try {
             String url = reportServiceUrl + "/api/reports/damage-assessment";
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
             headers.set("Authorization", authHeader);
             
-            // Create report object
             ReportDTO report = new ReportDTO();
             report.setImageId(saved.getImageId());
             report.setDamageAreas(saved.getDamageAreas().stream()
@@ -77,7 +75,6 @@ public class DamageAssessmentService {
         assessmentRepository.deleteAll(assessments);
     }
     
-    // DTO for report service
     private static class ReportDTO {
         private String imageId;
         private List<DamageAreaDTO> damageAreas;

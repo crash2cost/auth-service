@@ -13,10 +13,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Global exception handler for the authentication service.
- * Handles specific exceptions and returns appropriate HTTP responses.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

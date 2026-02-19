@@ -36,8 +36,6 @@ public class AuthServiceConstants {
         public static final String INVALID_CREDENTIALS = "Invalid username or password";
         public static final String USERNAME_NOT_FOUND = "User not found with username: ";
         public static final String USER_ROLE = "ROLE_";
-        // Length of "Bearer " prefix (7 characters including space)
-        // Used to extract JWT token from Authorization header
         public static final int AUTH_HEADER_PREFIX_LENGTH = 7;
         public static final String AUTH_HEADER = "Authorization";
         public static final String BEARER_PREFIX = "Bearer ";
