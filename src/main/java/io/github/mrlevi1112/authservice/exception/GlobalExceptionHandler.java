@@ -14,14 +14,24 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorDTO> handleRuntimeException(RuntimeException ex) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorDTO> handleBusinessException(BusinessException ex) {
         ErrorDTO error = new ErrorDTO(
                 ex.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorDTO> handleRuntimeException(RuntimeException ex) {
+        ErrorDTO error = new ErrorDTO(
+                "An error occurred",
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

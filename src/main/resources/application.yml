@@ -25,6 +25,6 @@ cors:
 
 logging:
   level:
-    io.github.mrlevi1112: DEBUG
-    org.springframework.security: DEBUG
+    io.github.mrlevi1112: INFO
+    org.springframework.security: INFO
     org.springframework.web: INFO

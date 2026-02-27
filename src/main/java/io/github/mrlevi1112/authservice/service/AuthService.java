@@ -1,6 +1,7 @@
 package io.github.mrlevi1112.authservice.service;
 
 import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
+import io.github.mrlevi1112.authservice.exception.BusinessException;
 import io.github.mrlevi1112.authservice.common.enums.UserRole;
 import io.github.mrlevi1112.authservice.dto.LogInDTO;
 import io.github.mrlevi1112.authservice.dto.SignUpDTO;
@@ -28,10 +29,10 @@ public class AuthService {
 
     public TokenDTO signup(SignUpDTO signUpDTO) {
         if (userRepository.existsByUsername(signUpDTO.getUsername())) {
-            throw new RuntimeException(AuthServiceConstants.AuthMessages.USERNAME_EXISTS);
+            throw new BusinessException(AuthServiceConstants.AuthMessages.USERNAME_EXISTS);
         }
         if (userRepository.existsByEmail(signUpDTO.getEmail())) {
-            throw new RuntimeException(AuthServiceConstants.AuthMessages.EMAIL_EXISTS);
+            throw new BusinessException(AuthServiceConstants.AuthMessages.EMAIL_EXISTS);
         }
 
         User user = createUser(signUpDTO);
