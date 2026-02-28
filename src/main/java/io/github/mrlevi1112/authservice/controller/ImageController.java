@@ -43,31 +43,29 @@ public class ImageController {
     }
 
     @GetMapping("/{imageId}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String imageId) {
-        try {
-            UserImage image = imageService.getImage(imageId);
-            
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(image.getContentType()));
-            headers.setContentLength(image.getSize());
-            headers.setContentDispositionFormData("inline", image.getFilename());
-
-            return new ResponseEntity<>(image.getData(), headers, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<byte[]> getImage(
+            @PathVariable String imageId,
+            Authentication authentication) {
+        String username = authentication.getName();
+        UserImage image = imageService.getImage(imageId);
+        if (!image.getUserId().equals(username)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(image.getContentType()));
+        headers.setContentLength(image.getSize());
+        headers.setContentDispositionFormData("inline", image.getFilename());
+
+        return new ResponseEntity<>(image.getData(), headers, HttpStatus.OK);
     }
 
     @DeleteMapping("/{imageId}")
     public ResponseEntity<Void> deleteImage(
             @PathVariable String imageId,
             Authentication authentication) {
-        try {
-            String username = authentication.getName();
-            imageService.deleteImage(imageId, username);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        String username = authentication.getName();
+        imageService.deleteImage(imageId, username);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -5,8 +5,10 @@ import io.github.mrlevi1112.authservice.dto.ImageDTO;
 import io.github.mrlevi1112.authservice.model.UserImage;
 import io.github.mrlevi1112.authservice.repository.UserImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -19,7 +21,17 @@ public class ImageService {
 
     private final UserImageRepository userImageRepository;
 
+    private static final List<String> ALLOWED_CONTENT_TYPES = List.of(
+            "image/jpeg", "image/png", "image/gif", "image/webp"
+    );
+
     public ImageDTO uploadImage(String userId, MultipartFile file) throws IOException {
+        String contentType = file.getContentType();
+        if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Invalid file type. Allowed types: JPEG, PNG, GIF, WebP");
+        }
+
         UserImage image = UserImage.builder()
                 .userId(userId)
                 .filename(file.getOriginalFilename())
@@ -35,7 +47,7 @@ public class ImageService {
     }
 
     public List<ImageDTO> getUserImages(String userId) {
-        return userImageRepository.findByUserId(userId)
+        return userImageRepository.findByUserIdExcludingData(userId)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -43,13 +55,13 @@ public class ImageService {
 
     public UserImage getImage(String imageId) {
         return userImageRepository.findById(imageId)
-                .orElseThrow(() -> new RuntimeException(AuthServiceConstants.Images.IMAGE_NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, AuthServiceConstants.Images.IMAGE_NOT_FOUND));
     }
 
     public void deleteImage(String imageId, String userId) {
         UserImage image = getImage(imageId);
         if (!image.getUserId().equals(userId)) {
-            throw new RuntimeException(AuthServiceConstants.Images.UNAUTHORIZED_TO_DELETE_IMAGE);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, AuthServiceConstants.Images.UNAUTHORIZED_TO_DELETE_IMAGE);
         }
         userImageRepository.deleteById(imageId);
     }

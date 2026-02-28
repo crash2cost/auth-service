@@ -1,10 +1,16 @@
 package io.github.mrlevi1112.authservice.controller;
 
+import io.github.mrlevi1112.authservice.dto.DamageAssessmentDTO;
 import io.github.mrlevi1112.authservice.model.DamageAssessment;
-import io.github.mrlevi1112.authservice.security.JwtUtil;
 import io.github.mrlevi1112.authservice.service.DamageAssessmentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,60 +20,52 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DamageAssessmentController {
     private final DamageAssessmentService assessmentService;
-    private final JwtUtil jwtUtil;
 
     @PostMapping
     public ResponseEntity<DamageAssessment> saveAssessment(
             @RequestHeader("Authorization") String token,
-            @RequestBody DamageAssessment assessment) {
-        String userId = jwtUtil.extractUsername(token.replace("Bearer ", ""));
-        assessment.setUserId(userId);
-        return ResponseEntity.ok(assessmentService.saveAssessment(token, assessment));
+            Authentication authentication,
+            @Valid @RequestBody DamageAssessmentDTO dto) {
+        return ResponseEntity.ok(assessmentService.saveAssessment(token, dto, authentication.getName()));
     }
 
     @GetMapping
     public ResponseEntity<List<DamageAssessment>> getUserAssessments(
-            @RequestHeader("Authorization") String token) {
-        String userId = jwtUtil.extractUsername(token.replace("Bearer ", ""));
-        return ResponseEntity.ok(assessmentService.getUserAssessments(userId));
+            Authentication authentication) {
+        return ResponseEntity.ok(assessmentService.getUserAssessments(authentication.getName()));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<DamageAssessment>> getAllAssessments(
-            @RequestHeader("Authorization") String token) {
-        String role = jwtUtil.extractRole(token.replace("Bearer ", ""));
-        if (role == null || !"ADMIN".equalsIgnoreCase(role)) {
-            return ResponseEntity.status(403).build();
-        }
-        return ResponseEntity.ok(assessmentService.getAllAssessments());
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<DamageAssessment>> getAllAssessments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, Math.min(size, 100));
+        return ResponseEntity.ok(assessmentService.getAllAssessments(pageable));
     }
 
     @GetMapping("/image/{imageId}")
     public ResponseEntity<DamageAssessment> getAssessmentByImageId(
-            @PathVariable String imageId) {
+            @PathVariable String imageId,
+            Authentication authentication) {
         return assessmentService.getAssessmentByImageId(imageId)
+                .filter(a -> a.getUserId().equals(authentication.getName()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{assessmentId}")
     public ResponseEntity<Void> deleteAssessment(
-            @RequestHeader("Authorization") String token,
+            Authentication authentication,
             @PathVariable String assessmentId) {
-        try {
-            String userId = jwtUtil.extractUsername(token.replace("Bearer ", ""));
-            assessmentService.deleteAssessment(assessmentId, userId);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(403).build();
-        }
+        assessmentService.deleteAssessment(assessmentId, authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/all")
     public ResponseEntity<Void> deleteAllAssessments(
-            @RequestHeader("Authorization") String token) {
-        String userId = jwtUtil.extractUsername(token.replace("Bearer ", ""));
-        assessmentService.deleteAllUserAssessments(userId);
+            Authentication authentication) {
+        assessmentService.deleteAllUserAssessments(authentication.getName());
         return ResponseEntity.noContent().build();
     }
 }

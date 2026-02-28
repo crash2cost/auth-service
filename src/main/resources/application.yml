@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: crash2cost-api
+    name: auth-service
 
   data:
     mongodb:
@@ -15,8 +15,8 @@ spring:
       max-request-size: 10MB
 
 jwt:
-  secret: ${env.JWT_SECRET}
-  expiration: ${env.JWT_EXPIRATION:3600000}
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:3600000}
 
 upload:
   directory: uploads

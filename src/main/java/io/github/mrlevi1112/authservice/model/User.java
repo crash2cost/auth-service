@@ -14,9 +14,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-import static io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants.Validation.MAX_PASSWORD_LENGTH;
-import static io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants.Validation.MIN_PASSWORD_LENGTH;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -36,12 +33,6 @@ public class User {
     @Indexed(unique = true)
     private String email;
 
-    @NotBlank(message = AuthServiceConstants.Validation.BLANK_PASSWORD)
-    @NotNull(message = AuthServiceConstants.Validation.NULL_PASSWORD)
-    @Size(min = MIN_PASSWORD_LENGTH , max = MAX_PASSWORD_LENGTH , message = AuthServiceConstants.Validation.PASSWORD_LENGTH_MESSAGE)
-    @Pattern(
-            regexp = AuthServiceConstants.Validation.PASSWORD_REGEXP,
-            message = AuthServiceConstants.Validation.PASSWORD_REQUIREMENTS)
     private String password;
 
     @NotNull(message = AuthServiceConstants.Validation.NULL_USER_ROLE)

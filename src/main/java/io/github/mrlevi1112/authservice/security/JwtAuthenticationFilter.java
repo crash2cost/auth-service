@@ -49,6 +49,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authenticateUser(jwt, request);
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             log.debug("Expired JWT token detected: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"Token expired\"}");
+            return;
+        } catch (io.jsonwebtoken.JwtException e) {
+            log.debug("Invalid JWT token: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"Invalid token\"}");
+            return;
         }
 
         filterChain.doFilter(request, response);

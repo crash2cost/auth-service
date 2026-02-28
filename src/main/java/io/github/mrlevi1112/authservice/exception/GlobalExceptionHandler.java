@@ -8,10 +8,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,16 +35,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ErrorDTO> handleInvalidCredentials(InvalidCredentialsException ex) {
-        ErrorDTO error = new ErrorDTO(
-                ex.getMessage(),
-                AuthServiceConstants.Security.HTTP_UNAUTHORIZED,
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorDTO> handleBadCredentials(BadCredentialsException ex) {
         ErrorDTO error = new ErrorDTO(
@@ -57,11 +46,27 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
+    public ResponseEntity<ErrorDTO> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .reduce((a, b) -> a + "; " + b)
+                .orElse("Validation failed");
+        ErrorDTO error = new ErrorDTO(
+                message,
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
         );
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorDTO> handleResponseStatusException(ResponseStatusException ex) {
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+        ErrorDTO error = new ErrorDTO(
+                ex.getReason(),
+                status.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, status);
     }
 }

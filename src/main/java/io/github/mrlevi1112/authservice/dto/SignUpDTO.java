@@ -3,7 +3,6 @@ package io.github.mrlevi1112.authservice.dto;
 import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -29,7 +28,6 @@ public class SignUpDTO {
     private String email;
 
     @NotBlank(message = AuthServiceConstants.Validation.BLANK_PASSWORD)
-    @NotNull(message = AuthServiceConstants.Validation.NULL_PASSWORD)
     @Size(min = MIN_PASSWORD_LENGTH , max = MAX_PASSWORD_LENGTH , message = AuthServiceConstants.Validation.PASSWORD_LENGTH_MESSAGE)
     @Pattern(
             regexp = AuthServiceConstants.Validation.PASSWORD_REGEXP,
