@@ -1,4 +1,4 @@
-package io.github.mrlevi1112.authservice.config;
+package main.java.io.github.mrlevi1112.authservice.config;
 
 import io.github.mrlevi1112.authservice.common.constants.AuthServiceConstants;
 import io.github.mrlevi1112.authservice.security.CustomUserDetailsService;
