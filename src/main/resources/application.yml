@@ -18,6 +18,9 @@ jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:3600000}
 
+admin:
+  secret: ${ADMIN_SECRET:crash2cost-admin-2024}
+
 upload:
   directory: uploads
 
