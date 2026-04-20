@@ -12,4 +12,6 @@ public interface DamageAssessmentRepository extends MongoRepository<DamageAssess
     List<DamageAssessment> findByUserIdOrderByAssessmentDateDesc(String userId);
     Optional<DamageAssessment> findByImageId(String imageId);
     Page<DamageAssessment> findAllBy(Pageable pageable);
+    void deleteByUserId(String userId);
+    long countByUserId(String userId);
 }
