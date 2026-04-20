@@ -27,7 +27,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path != null && path.startsWith(AuthServiceConstants.Security.AUTH_API_BASE);
+        if (path == null) return false;
+        // Process JWT for /api/auth/admin-access (requires authentication)
+        if (path.equals(AuthServiceConstants.Security.AUTH_API_BASE + "admin-access")) {
+            return false;
+        }
+        return path.startsWith(AuthServiceConstants.Security.AUTH_API_BASE);
     }
 
     @Override
